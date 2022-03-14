@@ -12,6 +12,8 @@ services:
       - ./site.conf:/etc/nginx/conf.d/site.conf
       - /etc/ssl/certs/localhost.crt:/etc/ssl/certs/localhost.crt
       - /etc/ssl/private/localhost.key:/etc/ssl/private/localhost.key
+      - /var/log/nginx/access.log:/var/log/nginx/access.log
+      - /var/log/nginx/error.log:/var/log/nginx/error.log
     links:
       - php
 
