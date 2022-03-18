@@ -2,14 +2,17 @@
 <?php
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	$result = authenticate_user($dbconn, $_POST['username'], $_POST['password']);
-	if (pg_num_rows($result) == 1) {
-		$_SESSION['username'] = $_POST['username'];
-		$_SESSION['authenticated'] = True;
-		$_SESSION['id'] = pg_fetch_array($result)['id'];
-		//Redirect to admin area
-		header("Location: /admin.php");
-	}	
+	$hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+	if(password_verify($password, $hashedPassword) == 1) {
+		$result = authenticate_user($dbconn, $_POST['username'], $_POST['password']);
+		if (pg_num_rows($result) == 1) {
+			$_SESSION['username'] = $_POST['username'];
+			$_SESSION['authenticated'] = True;
+			$_SESSION['id'] = pg_fetch_array($result)['id'];
+			//Redirect to admin area
+			header("Location: /admin.php");
+		}
+	}
 }
 
 ?>
@@ -63,6 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       <input type="text" id="inputUsername" class="form-control" placeholder="Username" required autofocus name='username'>
       <label for="inputPassword" class="sr-only">Password</label>
       <input type="password" id="inputPassword" class="form-control" placeholder="Password" required name='password'>
+      <input type="hidden" name="_token" value="<?php echo $_SESSION['_token'];?>">
       <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
     </form>
 <br>
