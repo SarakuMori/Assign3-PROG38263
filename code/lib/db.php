@@ -11,6 +11,29 @@ if ($debug) {
 	}    
 }
 
+function  sess_open() {
+  return true;
+}
+function  sess_close() {
+  return true;
+}
+function  sess_read($id) {
+  global  $Rediska;
+  return  $Rediska->on(‘common’)->get(“session_”  .  $id);
+}
+function  sess_write($id,  $data) {
+  global  $Rediska;
+  $Rediska->on(‘common’)->set(“session_”  .  $id,  $data);
+  $Rediska->on(‘common’)->expire(“session_”  .  $id,  86400);
+}
+function  sess_destroy($id) {
+  global  $Rediska;
+  $Rediska->on(‘common’)->delete(“session_”  .  $id);
+}
+function  sess_clean($max) {
+  return true;
+}
+
 function run_query($dbconn, $query) {
 	if ($debug) {
 		echo "$query<br>";
