@@ -88,19 +88,21 @@ function update_article($dbconn, $title, $content, $aid) {
 }
 
 function authenticate_user($dbconn, $username, $password) {
-	$query=
-		"SELECT
+	$stmt = $dbconn->prepare("SELECT
 		authors.id as id,
 		authors.username as username,
 		authors.password as password,
 		authors.role as role
-		FROM
-		authors
-		WHERE
-		username='".$_POST['username']."'
-		AND
-		password='".$_POST['password']."'
-		LIMIT 1";
-	return run_query($dbconn, $query);
-}	
+		FROM authors WHERE
+		username=? AND password=?
+		LIMIT 1");
+	$user = $_POST['username'];
+	$pass = $_POST['password'];	
+	
+	$stmt->bind_param("ss", $user, $pass);
+	$stmt->execute();
+	$res = $stmt->get_result();
+	
+	return $res;
+}
 ?>
